@@ -1,8 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import UserForm from './UserForm'
+import axios from 'axios';
 
-
-const Users = ({ users })=> {
+const Users = ({ users, deleteUser })=> {
   return (
     <div>
       <h1>Users</h1>
@@ -12,11 +13,13 @@ const Users = ({ users })=> {
             return (
               <li key={ user.id }>
                 { user.name }
+                <button onClick = { ()=>{deleteUser(user.id)} }>X</button>
               </li>
             );
           })
         }
       </ul>
+      <UserForm />
     </div>
   );
 }
@@ -26,4 +29,13 @@ const mapStateToProps = (state)=> {
     users: state.users
   };
 }
-export default connect(mapStateToProps)(Users);
+
+const mapDispatchToProps = (dispatch)=> {
+    return {
+        deleteUser: async(id) => {
+            await axios.delete(`/api/users/${id}`);
+            dispatch( { type: 'DELETE_USER', payload: { id }});
+        }
+    };
+};
+export default connect(mapStateToProps, mapDispatchToProps)(Users);
