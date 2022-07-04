@@ -44,7 +44,12 @@ app.delete('/api/things/:id', async(req, res, next)=> {
 });
 app.get('/api/things', async(req, res, next)=> {
   try {
-    res.send(await Thing.findAll());
+    res.send(await Thing.findAll({
+      include: {
+        model: User,
+        through: Join
+      }
+    }));
   }
   catch(ex){
     next(ex);
@@ -61,7 +66,12 @@ app.put('/api/things/:id', async(req,res,next)=>{
 })
 app.get('/api/users', async(req, res, next)=> {
   try {
-    res.send(await User.findAll());
+    res.send(await User.findAll({
+      include: {
+        model: Thing,
+        through: Join
+      }
+    }));
   }
   catch(ex){
     next(ex);
